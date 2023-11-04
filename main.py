@@ -4,11 +4,13 @@ import openpyxl
 import smtplib
 from email.mime.text import MIMEText
 
+# 导入成绩表
 def import_grades(file_path):
     workbook = openpyxl.load_workbook(file_path)
     sheet = workbook.active
     return sheet
 
+# 生成成绩单通知
 def generate_grade_notification(student_info):
     template = """
     亲爱的{}同学:
@@ -32,6 +34,7 @@ def generate_grade_notification(student_info):
 
     return template
 
+# 整理学生信息
 def process_student_info(sheet):
     student_info_list = []
     student_info = {}
@@ -55,48 +58,49 @@ def process_student_info(sheet):
 
     return student_info_list
 
+# 发送邮件
 def send_email(sender_email, subject, body, receiver_email):
     mail_host = "smtp.qq.com"
     mail_user = sender_email
     mail_pass = "ekgalptiarmrdjei"
     
     sender = sender_email
-    receivers = [receiver_email]
-    
-    message = MIMEText(body, 'plain')
-    message['From'] = sender_email
-    message['To'] = receiver_email
-    message['Subject'] = subject
     
     try:
         smtpobj = smtplib.SMTP_SSL(mail_host, 465)
         smtpobj.login(mail_user, mail_pass)
+        
+        receivers = [receiver_email]
+        message = MIMEText(body, 'plain')
+        message['From'] = sender_email
+        message['To'] = receiver_email
+        message['Subject'] = subject
         smtpobj.sendmail(sender, receivers, message.as_string())
-        print("邮件发送成功")
+        print(f"邮件发送成功至{receiver_email}")
+        
         smtpobj.quit()
     except smtplib.SMTPException as e:
         print("Error: 无法发送邮件")
         print(e)
 
+# 上传文件功能
 def upload_file():
     global file_path
     file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx")])
     label.configure(text=file_path)
 
-def get_receiver_email():
-    receiver_email = simpledialog.askstring("输入邮箱", "请输入要发送到的邮箱地址:")
-    return receiver_email
-
+# 发送邮件功能
 def send_emails():
-    receiver_email = get_receiver_email()
-    if receiver_email:
-        sheet = import_grades(file_path)
-        student_info_list = process_student_info(sheet)
+    sheet = import_grades(file_path)
+    student_info_list = process_student_info(sheet)
 
-        for student_info in student_info_list:
-            grade_notification = generate_grade_notification(student_info)
+    for student_info in student_info_list:
+        grade_notification = generate_grade_notification(student_info)
+        receiver_email = simpledialog.askstring(f"输入收件人姓名({student_info['姓名']})", f"请输入{student_info['姓名']}的邮箱地址:")
+        if receiver_email:
             send_email('2435141349@qq.com', '成绩单通知', grade_notification, receiver_email)
 
+# 创建 GUI 界面
 root = tk.Tk()
 root.title("成绩单通知")
 
@@ -106,7 +110,7 @@ label.pack(pady=10)
 upload_button = tk.Button(root, text="上传文件", command=upload_file)
 upload_button.pack(pady=10)
 
-email_button = tk.Button(root, text="输入邮箱并发送邮件", command=send_emails)
+email_button = tk.Button(root, text="输入姓名和发送邮件", command=send_emails)
 email_button.pack(pady=10)
 
 root.mainloop()
