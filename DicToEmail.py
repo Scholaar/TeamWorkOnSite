@@ -7,10 +7,7 @@ class DicToEmail:
     def __init__(self, username, password, smtp_server="smtp.gmail.com", smtp_port=587) -> None:
         # self
         # 连接到SMTP服务器
-        # self.smtp_server = "smtp.gmail.com"  # 使用Gmail作为示例
-        # self.smtp_port = 587
         self.sender_email = username
-        # self.password = "your_password"
         self.server = smtplib.SMTP(smtp_server, smtp_port)
         self.server.starttls()
         self.server.login(username, password)
@@ -19,9 +16,8 @@ class DicToEmail:
         self.server.quit()
 
     def sendEmail(self, your_dictionary):
-        # 定义发送方和接收方的邮箱地址
-        # sender_email = "your_email@gmail.com"
-        receiver_email = your_dictionary['学号'] + "@example.com"
+        # 定义接收方的邮箱地址
+        receiver_email = your_dictionary['学号'] + "@fzu.com"
         receiver_name = your_dictionary['姓名']
         receiver_score = your_dictionary['成绩']
         # json格式
@@ -63,17 +59,16 @@ class DicToEmail:
         #     "key3": "value3"
         # }
 
-        # dict_str = "\n".join([f"{key}: {value}" for key, value in your_dictionary.items()])
-        # msg.attach(MIMEText(dict_str, 'plain'))
-
         # 发送邮件
         try:
             self.server.sendmail(self.sender_email, receiver_email, msg.as_string())
         except Exception as e:
             return "Email sent failed!" + str(e)
-        # finally:
 
+        # finally:
         # 退出SMTP服务器连接
         # server.quit()
 
-        return "Email sent successfully!"
+        return "发送成功！"
+
+
