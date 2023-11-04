@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, simpledialog
 import openpyxl
 import smtplib
 from email.mime.text import MIMEText
@@ -55,17 +55,17 @@ def process_student_info(sheet):
 
     return student_info_list
 
-def send_email(sender_email, subject, body):
+def send_email(sender_email, subject, body, receiver_email):
     mail_host = "smtp.qq.com"
     mail_user = sender_email
     mail_pass = "ekgalptiarmrdjei"
     
     sender = sender_email
-    receivers = ['102102131@fzu.edu.cn']
+    receivers = [receiver_email]
     
     message = MIMEText(body, 'plain')
     message['From'] = sender_email
-    message['To'] = "102102131@fzu.edu.cn"
+    message['To'] = receiver_email
     message['Subject'] = subject
     
     try:
@@ -83,13 +83,19 @@ def upload_file():
     file_path = filedialog.askopenfilename(filetypes=[("Excel Files", "*.xlsx")])
     label.configure(text=file_path)
 
-def send_emails():
-    sheet = import_grades(file_path)
-    student_info_list = process_student_info(sheet)
+def get_receiver_email():
+    receiver_email = simpledialog.askstring("输入邮箱", "请输入要发送到的邮箱地址:")
+    return receiver_email
 
-    for student_info in student_info_list:
-        grade_notification = generate_grade_notification(student_info)
-        send_email('2435141349@qq.com', '成绩单通知', grade_notification)
+def send_emails():
+    receiver_email = get_receiver_email()
+    if receiver_email:
+        sheet = import_grades(file_path)
+        student_info_list = process_student_info(sheet)
+
+        for student_info in student_info_list:
+            grade_notification = generate_grade_notification(student_info)
+            send_email('2435141349@qq.com', '成绩单通知', grade_notification, receiver_email)
 
 root = tk.Tk()
 root.title("成绩单通知")
@@ -100,7 +106,7 @@ label.pack(pady=10)
 upload_button = tk.Button(root, text="上传文件", command=upload_file)
 upload_button.pack(pady=10)
 
-send_button = tk.Button(root, text="发送邮件", command=send_emails)
-send_button.pack(pady=10)
+email_button = tk.Button(root, text="输入邮箱并发送邮件", command=send_emails)
+email_button.pack(pady=10)
 
 root.mainloop()
