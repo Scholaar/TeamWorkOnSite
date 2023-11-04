@@ -22,18 +22,17 @@
 <script setup>
 import { UploadFilled } from '@element-plus/icons-vue'
 import request from '../utils/requests'
-// const onSuccess = (res, file, fileList) => {
-//   // 如果成功路由跳转到task页面，否则提示错误
-//   if (res.code === 200) {
-//     console.log(res)
-//     console.log(file)
-//     console.log(fileList)
-//     // this.$router.push('/task')
-//   } else {
-//     this.$message.error(res.msg)
-//   }
-// }
-
+const onSuccess = (res, file, fileList) => {
+  // 如果成功路由跳转到task页面，否则提示错误
+  if (res.mesg === 'ok') {
+    console.log(res)
+    console.log(file)
+    console.log(fileList)
+    router.push('/task')
+  } else {
+    console.log(res)
+  }
+}
 const sentAll = async () => {
     const res = await request({
         url: '/api/sent',

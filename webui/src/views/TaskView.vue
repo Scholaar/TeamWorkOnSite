@@ -9,31 +9,9 @@
             <div class="table">
                 <el-scrollbar height="85vh">
                     <el-table :data="tableData">
-                        <!-- 选课时间	学号	姓名	课程名称	学分	百分成绩	五分成绩	考试类型	选修类型 -->
-                        <!-- ['date', 'id', 'sname', 'cname', 'score', 'score_p', 'full_score', 'etype', 'stype'] -->
-                        <el-table-column prop="date" label="选课时间"/>
                         <el-table-column prop="id" label="学号"/>
-                        <el-table-column prop="sname" label="姓名"/>
-                        <el-table-column prop="cname" label="课程名称"/>
-                        <el-table-column prop="score" label="学分"/>
-                        <el-table-column prop="score_p" label="百分成绩"/>
-                        <el-table-column prop="full_score" label="五分成绩"/>
-                        <el-table-column prop="etype" label="考试类型"/>
-                        <el-table-column prop="stype" label="选修类型"/>
-                        <el-table-column fixed="right" label="操作" width="170">
-                            <template #default="scope">
-                                <el-button
-                                type="primary"
-                                size="small"
-                                @click="sent(scope.row.key)"
-                                >发送</el-button>
-                                <el-button
-                                type="danger"
-                                size="small"
-                                @click="deleteTask(scope.row.key)"
-                                >删除</el-button>
-                            </template>
-                        </el-table-column>
+                        <el-table-column prop="name" label="姓名"/>
+                        <el-table-column prop="num" label="课程数"/>
                     </el-table>
                 </el-scrollbar>
             </div>
